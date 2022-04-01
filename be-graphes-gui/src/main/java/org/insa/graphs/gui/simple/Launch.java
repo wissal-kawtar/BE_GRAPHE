@@ -55,17 +55,19 @@ public class Launch {
 
         // TODO: Read the graph.
         final Graph graph = null;
-
+        
         // Create the drawing:
         final Drawing drawing = createDrawing();
 
         // TODO: Draw the graph on the drawing.
+         Drawing.drawGraph()
 
         // TODO: Create a PathReader.
         final PathReader pathReader = null;
 
         // TODO: Read the path.
         final Path path = null;
+        
 
         // TODO: Draw the path.
     }
