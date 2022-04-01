@@ -3,6 +3,7 @@ package org.insa.graphs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,12 +36,47 @@ public class Path {
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+    		List<Arc> arcs = new ArrayList<Arc>();
+    		int i;
+    	//Aucun noeud
+    		if(nodes.size()== 0)
+    		{
+    			return new Path(graph);
+    		}
+    		//un noeud
+    		else if(nodes.size()==1) {
+    			return new Path(graph,nodes.get(0));
+    		}
+    		else {
+    			for(i=0;i<nodes.size()-1;i++) {
+    				Node actuel = nodes.get(i);
+    				Node next = nodes.get(i+1);
+    				Arc result = null;
+    			for(Arc arc :actuel.getSuccessors()) {
+    				if(arc.getDestination().compareTo(next) == 0) {
+    					if(result==null || result.getMinimumTravelTime() > arc.getMinimumTravelTime()) {
+    						result = arc;
+    						
+    					}
+    				}
+    			}
+    			
+    			if(result==null) {
+    				 throw new IllegalArgumentException();
+    			}
+    			else {
+    				
+    				arcs.add(result);
+    				
+    			}	
+    		}
+    			
+    		}
        
         
         return new Path(graph, arcs);
     }
+    
 
     /**
      * Create a new path that goes through the given list of nodes (in order),
@@ -54,12 +90,48 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
+     *  Need to be implemented.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        int i;
+    	//Aucun noeud
+    		if(nodes.size()== 0)
+    		{
+    			return new Path(graph);
+    		}
+    		//un noeud
+    		else if(nodes.size()==1) {
+    			return new Path(graph,nodes.get(0));
+    		}
+    		else {
+    			for(i=0;i<nodes.size()-1;i++) {
+    				Node actuel = nodes.get(i);
+    				Node next = nodes.get(i+1);
+    				Arc result = null;
+    			for(Arc arc :actuel.getSuccessors()) {
+    				if(arc.getDestination().compareTo(next) == 0) {
+    					if(result==null || result.getLength() > arc.getLength()) {
+    						result = arc;
+    						
+    					}
+    				}
+    			}
+    			
+    			if(result==null) {
+    				 throw new IllegalArgumentException();
+    			}
+    			else {
+    				
+    				arcs.add(result);
+    				
+    			}	
+    		}
+    			
+    		}
+       
+        
         return new Path(graph, arcs);
     }
 
@@ -206,18 +278,19 @@ public class Path {
     public boolean isValid( ) {
         // TODO:
     	boolean temp=false;
-    	if (isEmpty()) {
+    	
+    	if (this.isEmpty()) {
     		temp=true;
-    	}else if (this.size()==1){
+    	} else if (this.size()==1){
     			temp=true;
-    	} else if(this.origin==this.arcs.get(0).getOrigin()) {
-    		for (int i=0; i<this.size()-2; i++) {
+    	} else if (this.origin==this.arcs.get(0).getOrigin()) {
+    		for (int i=0; i<this.arcs.size()-1; i++) {
     			if(this.arcs.get(i).getDestination() == this.arcs.get(i+1).getOrigin()) {
-    				continue;
+    				temp=true;
     			}else {
     		    	temp=false;
+    		    	break;
     			}
-    			temp=true;
     		}
     	}else {
     		temp=false;
