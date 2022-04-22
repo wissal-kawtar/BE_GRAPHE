@@ -3,7 +3,7 @@ package org.insa.graphs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Label {
+public class Label implements Comparable<Label>{
 
    private boolean marque;
    private Node sommet;
@@ -14,17 +14,13 @@ public class Label {
 	   this.sommet=sommet;
 	   this.marque=marque;
 	   this.père=père;
+	   this.cout = Double.MAX_VALUE;
    }
-  /* public Label(Node node) {
-	   this.marque=false;
-	   this.cout=Double.MAX_VALUE;
-	   this.père=null;
-   }
-   */
+  
    
 	
-   public boolean getMarque() {
-		return marque;
+   public boolean isMarque() {
+		return this.marque;
 	}
 
 	public void setMarque(boolean marque) {
@@ -59,14 +55,15 @@ public class Label {
   public double getCost() {
 	  return this.cout;
   }
+
+
+
+@Override
+ public int compareTo(Label label) {
+	int comparaison=Double.compare(this.getCost(), label.getCost());
+			return comparaison;
+}
    
    
-   // Associer un label a chaque Noeud 
-   
-  /* public Label (Node node) {
-	   this.sommet=Node.getId();
-	   this.cout=
-	   this.père=
-	   this.marque=
-   }*/
+
 }
