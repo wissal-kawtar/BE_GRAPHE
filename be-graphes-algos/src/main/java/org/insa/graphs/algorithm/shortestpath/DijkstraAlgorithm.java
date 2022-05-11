@@ -22,50 +22,64 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     	 final ShortestPathData data = getInputData();
          ShortestPathSolution solution = null;
          Graph graph= data.getGraph();
+         
          final int nbLabels = graph.size();
          Label X;
-      // Initialize array of predecessors.
-     
+         // Nb Nodes = Nblabels 
          Label[] tableauLabel = new Label[nbLabels];
-         Node orgNode = data.getOrigin();
-
+         Node orgNode = data.getOrigin(); // origin Node 
+         //initialiser le tableau de labels
          for(Node node :graph.getNodes()) {
          	tableauLabel[node .getId()]=new Label(node,false,null);
          		}	
-         
-       // cost(origin)=0
+         // initialiser le cout du Origin Node , on la marque 
+         // cost(origin)=0
          tableauLabel[orgNode.getId()]= new Label (data.getOrigin(),true,null);
          tableauLabel[data.getOrigin().getId()].setCout(0);
-         //insert le label du noeaud origin dans  le heap 
-
+         //inserer le label du noeaud origin dans  le heap 
          BinaryHeap <Label> HeapLabel = new BinaryHeap <Label>();
         for(Label label : tableauLabel) {
      		HeapLabel.insert(label);
      		}
      
         while(! tableauLabel[data.getDestination().getId()].isMarque()) {
+        	// X c'est le sommet courant 
          	X=HeapLabel.deleteMin();
-         	
-         	
+   // on supprime le min du tas et on le marque 
          	X.setMarque(true);
-         	// pour tous les succeseurs de X
-         	for(Arc arc : X.getSommet().getSuccessors()) {
-         	Label labcourant=tableauLabel[arc.getDestination().getId()];
-         	if(! labcourant.isMarque() && labcourant.getCost() > X.getCost()+data.getCost(arc)) {
-         		labcourant.setCout(X.getCost()+ data.getCost(arc));
-         		labcourant.setPère(arc);
-         		if(labcourant.isMarque()==true) {
-         			HeapLabel.remove(labcourant);
-             		HeapLabel.insert(labcourant);
-         		}else {
-         		HeapLabel.insert(labcourant);
-         		}
-         	}
          	
+         	// pour tous les succeseurs de X noeud courant 
+         for(Arc arc : X.getSommet().getSuccessors()) { 
+        	 // on verifie si on peut vraiment prendre cet arc 
+  			if (!data.isAllowed(arc)) {
+                continue;
+            }
+    		 
+            double w = data.getCost(arc);
+            //on recupere le label du sommet suivant 
+         	Label labSuiv =tableauLabel[arc.getDestination().getId()];
+         	if(! labSuiv.isMarque() ) {
+         		//si c'est le meilleur cout 
+         		if(labSuiv.getCost() > X.getCost()+ w ) {
+
+         		labSuiv.setCout(X.getCost()+  w );
+         		labSuiv.setPère(arc);
+         if(labSuiv.isMarque()==true) {
+         			HeapLabel.remove(labSuiv);
+             		HeapLabel.insert(labSuiv);
+         		}else {
+         		HeapLabel.insert(labSuiv);
+         		}
+        
+         		
+         		
+         	}
+         	}
          	
          	}
         }
      
+        // si la destination n'a pas de predecesseur la solution est  infeasible
         if (!tableauLabel[data.getDestination().getId()].isMarque()) {
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }
