@@ -25,6 +25,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
          
          final int nbLabels = graph.size();
          Label X;
+         boolean exist;
          // Nb Nodes = Nblabels 
          Label[] tableauLabel = new Label[nbLabels];
          Node orgNode = data.getOrigin(); // origin Node 
@@ -36,6 +37,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
          // cost(origin)=0
          tableauLabel[orgNode.getId()]= new Label (data.getOrigin(),true,null);
          tableauLabel[data.getOrigin().getId()].setCout(0);
+         notifyOriginProcessed(data.getOrigin());
          //inserer le label du noeaud origin dans  le heap 
          BinaryHeap <Label> HeapLabel = new BinaryHeap <Label>();
         for(Label label : tableauLabel) {
@@ -45,8 +47,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         while(! tableauLabel[data.getDestination().getId()].isMarque()) {
         	// X c'est le sommet courant 
          	X=HeapLabel.deleteMin();
+         	// on vérifie d'abord si le cout du sommet courant est à l'infini, si c'est le cas le problème n'a pas de solution
+         	if(X.getCost() == Double.MAX_VALUE ) {
+         		break;
+         	}
    // on supprime le min du tas et on le marque 
-         	X.setMarque(true);
+         	else {	
+         		X.setMarque(true);
+         		System.out.println(X.getCost());
          	
          	// pour tous les succeseurs de X noeud courant 
          for(Arc arc : X.getSommet().getSuccessors()) { 
@@ -54,7 +62,19 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
   			if (!data.isAllowed(arc)) {
                 continue;
             }
-    		 
+    	/*	
+    	 * 
+    	 * 
+    	 * 
+    	 * if(tableauLabel[arc.getDestination().getId()] == null ) {
+    			exist = false;
+    			tableauLabel[arc.getDestination().getId()]= new Label(data.getDestination(),false,arc);
+    			
+    		}else {
+    			exist = true;
+    			
+    			
+    		}*/
             double w = data.getCost(arc);
             //on recupere le label du sommet suivant 
          	Label labSuiv =tableauLabel[arc.getDestination().getId()];
@@ -64,9 +84,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
          		labSuiv.setCout(X.getCost()+  w );
          		labSuiv.setPère(arc);
-         if(labSuiv.isMarque()==true) {
-         			HeapLabel.remove(labSuiv);
-             		HeapLabel.insert(labSuiv);
+         		notifyNodeReached(arc.getDestination());
+         	if(labSuiv.isMarque()==true) {
+         		HeapLabel.remove(labSuiv);
+             	HeapLabel.insert(labSuiv);
+             	
          		}else {
          		HeapLabel.insert(labSuiv);
          		}
@@ -78,7 +100,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
          	
          	}
         }
-     
+        }
         // si la destination n'a pas de predecesseur la solution est  infeasible
         if (!tableauLabel[data.getDestination().getId()].isMarque()) {
             solution = new ShortestPathSolution(data, Status.INFEASIBLE);
@@ -98,6 +120,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
             // Reverse the path...
             Collections.reverse(arcs);
+     		notifyDestinationReached(data.getDestination());
 
             // Create the final solution.
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
