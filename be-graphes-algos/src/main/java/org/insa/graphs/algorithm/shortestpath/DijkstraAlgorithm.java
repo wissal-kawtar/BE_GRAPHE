@@ -8,13 +8,15 @@ import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.model.Arc;
 import org.insa.graphs.model.Graph;
-import org.insa.graphs.model.Label;
 import org.insa.graphs.model.Node;
 import org.insa.graphs.model.Path;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
+    }
+    protected Label NewLabel(Node node, boolean marque, Arc père,ShortestPathData data) {
+    	return new Label(node,marque,père);
     }
 
     @Override
@@ -31,11 +33,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
          Node orgNode = data.getOrigin(); // origin Node 
          //initialiser le tableau de labels
          for(Node node :graph.getNodes()) {
-         	tableauLabel[node .getId()]=new Label(node,false,null);
+         	tableauLabel[node .getId()]=NewLabel(node,false,null,data);
          		}	
          // initialiser le cout du Origin Node , on la marque 
          // cost(origin)=0
-         tableauLabel[orgNode.getId()]= new Label (data.getOrigin(),true,null);
+         tableauLabel[orgNode.getId()]= NewLabel(data.getOrigin(),true,null,data);
          tableauLabel[data.getOrigin().getId()].setCout(0);
          notifyOriginProcessed(data.getOrigin());
          //inserer le label du noeaud origin dans  le heap 

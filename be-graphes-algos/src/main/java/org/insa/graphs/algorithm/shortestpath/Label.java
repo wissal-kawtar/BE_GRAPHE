@@ -1,13 +1,16 @@
-package org.insa.graphs.model;
+package org.insa.graphs.algorithm.shortestpath;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.insa.graphs.model.Arc;
+import org.insa.graphs.model.Node;
 
 public class Label implements Comparable<Label>{
 
    private boolean marque;
    private Node sommet;
-   private double cout;
+   protected double cout;
    private Arc père ;
    
    public Label(Node sommet, boolean marque, Arc père) {
@@ -55,13 +58,17 @@ public class Label implements Comparable<Label>{
   public double getCost() {
 	  return this.cout;
   }
+  
+  public double getTotalCost() {
+	  return this.cout;
+  }
 
 
 
 @Override
 //Comparer 2 couts 
  public int compareTo(Label label) {
-	int comparaison=Double.compare(this.getCost(), label.getCost());
+	int comparaison=Double.compare(this.getTotalCost(), label.getTotalCost());
 			return comparaison;
 }
    
