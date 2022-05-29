@@ -39,21 +39,25 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
          // cost(origin)=0
          tableauLabel[orgNode.getId()]= NewLabel(data.getOrigin(),true,null,data);
          tableauLabel[data.getOrigin().getId()].setCout(0);
+         
+         //Notify all observers that the origin has been processed.
          notifyOriginProcessed(data.getOrigin());
-         //inserer le label du noeaud origin dans  le heap 
+         
+         //inserer le label du node origin dans  le heap 
          BinaryHeap <Label> HeapLabel = new BinaryHeap <Label>();
+         
         for(Label label : tableauLabel) {
      		HeapLabel.insert(label);
      		}
      
-        while(! tableauLabel[data.getDestination().getId()].isMarque()) {
-        	// X c'est le sommet courant 
+        while(!HeapLabel.isEmpty() && ! tableauLabel[data.getDestination().getId()].isMarque()) {
+       // X c'est le sommet courant 
          	X=HeapLabel.deleteMin();
          	// on vérifie d'abord si le cout du sommet courant est à l'infini, si c'est le cas le problème n'a pas de solution
          	if(X.getCost() == Double.MAX_VALUE ) {
          		break;
          	}
-   // on supprime le min du tas et on le marque 
+          // on supprime le min du tas et on le marque 
          	else {	
          		X.setMarque(true);
          		System.out.println(X.getCost());
@@ -64,19 +68,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
   			if (!data.isAllowed(arc)) {
                 continue;
             }
-    	/*	
-    	 * 
-    	 * 
-    	 * 
-    	 * if(tableauLabel[arc.getDestination().getId()] == null ) {
-    			exist = false;
-    			tableauLabel[arc.getDestination().getId()]= new Label(data.getDestination(),false,arc);
-    			
-    		}else {
-    			exist = true;
-    			
-    			
-    		}*/
+    
             double w = data.getCost(arc);
             //on recupere le label du sommet suivant 
          	Label labSuiv =tableauLabel[arc.getDestination().getId()];
